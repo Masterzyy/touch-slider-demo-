@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>carousel--触屏轮播图</title>
+    <style>
+        html,
+        body,
+        ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel ul {
+            list-style: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel ul li {
+            float: left;
+            width: 100%;
+        }
+
+        .carousel ul a {
+            display: block;
+            width: 100%;
+        }
+
+        .carousel ul img {
+            width: 100%;
+            height: auto;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="carousel">
+        <ul>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/0.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/1.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/2.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/3.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/4.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/5.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/6.png" alt="">
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <img src="./image/7.png" alt="">
+                </a>
+            </li>
+        </ul>
+    </div>
+    <script>
+        var carousel = document.querySelector('.carousel');
+        var ul = carousel.querySelector('ul');
+        //获取是获取第一个，设置是全部设置
+        var firstLi = ul.querySelector('li');
+        var lastLi = ul.querySelector('li:last-child');
+
+        var aLi, carouselWidth, index = 0,
+            startX, endX, timer;
+
+        function init() {
+            //在最后一张图片后插入第一种图片
+            ul.appendChild(firstLi.cloneNode(true));
+            //在第一个li前插入复制的最后一张图片
+            ul.insertBefore(lastLi.cloneNode(true), firstLi);
+            aLi = ul.querySelectorAll('li');
+            carouselWidth = document.documentElement.offsetWidth;
+            setWidth();
+            index--;
+            ul.style.left = index * carouselWidth + 'px';
+            autoplay();
+
+        }
+       
+        //  设置ul和li宽度
+        function setWidth() {
+            carousel.style.width = carouselWidth + 'px';
+            ul.style.width = aLi.length * carouselWidth + 'px';
+            for (var i = 0; i < aLi.length; i++) {
+                aLi[i].style.width = carouselWidth + 'px'
+            }
+        }
+        //  让轮播图轮播起来
+        function autoplay() {
+            timer = setInterval(function () {
+                index--;
+                ul.style.left = index * carouselWidth + "px";
+                ul.style.transition = "all 1s";
+            }, 1500)
+        }
+        //给ul添加transitionEnd事件 当ul过渡完成的时候去监听
+        ul.addEventListener('webkitTransitionEnd', function () {
+            if (index == 0) {
+                index = -8;
+            }
+            if (index == -9) {
+                index = -1
+            }
+            //  让ul的left值变化
+            ul.style.left = index * carouselWidth + 'px';
+            // 去除ul的过渡效果
+            ul.style.transition = '';
+        })
+        //  用手指控制轮播图(移动端事件)
+        ul.addEventListener('touchstart', function (e) {
+            clearInterval(timer);
+            var touches = e.targetTouches[0];
+            startX = touches.clientX;
+        })
+        ul.addEventListener('touchend', function (e) {
+            autoplay();
+            var touches = e.changedTouches[0];
+            endX = touches.clientX;
+            endX > startX ? index++ : index--;
+            ul.style.left = index * carouselWidth + 'px';
+            ul.style.transtion = 'all 1s';
+        })
+        init();
+    </script>
+</body>
+
+</html>
